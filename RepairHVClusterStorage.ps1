@@ -16,7 +16,7 @@
 
 Get-Cluster
 
-Get-PhysicalDisk
+Get-PhysicalDisk | Out-String
 
 Get-VirtualDisk
 
