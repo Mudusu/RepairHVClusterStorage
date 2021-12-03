@@ -16,7 +16,15 @@
 
 Get-Cluster
 
+$ClusterNodes = Get-ClusterNode
+if($ClusterNodes.State -contains "Paused")
+{
+		Get-ClusterNode | Where-Object {$_.State -eq "Paused"} | Resume-ClusterNode
+}
+
 Get-ClusterNode | Out-String
+
+
 
 Get-PhysicalDisk | Out-String
 
