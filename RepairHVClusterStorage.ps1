@@ -38,9 +38,10 @@ Suspend-ClusterNode -Name $badNode
 Get-ClusterGroup | Where-Object {($_.OwnerNode -eq $badNode) -and ($_.GroupType -eq "VirtualMachine")} | Move-ClusterVirtualMachineRole
 Get-ClusterGroup | Where-Object {$_.OwnerGroup -eq $badNode} | Move-ClusterGroup
 
-Get-Service -Name ClusSvc -ComputerName $badNode | Stop-Service
-Start-Sleep -Seconds 5
-Get-Service -Name ClusSvc -ComputerName $badNode | Start-Service
+Get-Service -ComputerName $badNode | out-string
+#Get-Service -Name ClusSvc -ComputerName $badNode | Stop-Service
+#Start-Sleep -Seconds 5
+#Get-Service -Name ClusSvc -ComputerName $badNode | Start-Service
 
 Resume-ClusterNode $badNode
 
