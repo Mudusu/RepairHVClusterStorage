@@ -1,0 +1,7 @@
+---
+- name: Repair Hyper-V Cluster Storage
+  gather_facts: false
+  hosts: all
+  tasks:
+          - name: Run PowerShell script
+            script: RepairHVClusterStorage.ps1
