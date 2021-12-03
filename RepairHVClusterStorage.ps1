@@ -16,10 +16,12 @@
 
 Get-Cluster
 
+Get-ClusterNode | Out-String
+
 Get-PhysicalDisk | Out-String
 
-Get-VirtualDisk
+Get-VirtualDisk | Out-String
 
-Get-StorageJob
+Get-StorageJob | Out-String
 
 Get-Service -Name ClusSvc
