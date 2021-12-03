@@ -27,7 +27,7 @@ Get-ClusterNode | Out-String
 #Get Cluster Disks
 Get-PhysicalDisk | Out-String
 
-$badNode = "hyp01"
+$badNode = "hyp02"
 
 #Get Virtual Disks
 Get-VirtualDisk | Out-String
@@ -35,6 +35,8 @@ Get-VirtualDisk | Out-String
 # Pause Node
 Get-ClusterGroup | Where-Object {($_.OwnerNode -eq $badNode) -and ($_.GroupType -eq "VirtualMachine")} | Move-ClusterVirtualMachineRole
 Get-ClusterGroup | Where-Object {$_.OwnerGroup -eq $badNode} | Move-ClusterGroup
+
+Suspend-ClusterNode -Name $badNode
 
 #Get StorageJob
 Get-StorageJob | Out-String
