@@ -15,39 +15,68 @@
 # Repair storage
 
 Get-Cluster
-
-$ClusterNodes = Get-ClusterNode
-if($ClusterNodes.State -contains "Paused")
-{
-		Get-ClusterNode | Where-Object {$_.State -eq "Paused"} | Resume-ClusterNode
-}
-
 Get-ClusterNode | Out-String
 
 #Get Cluster Disks
-Get-PhysicalDisk | Out-String
+$badDisks = Get-PhysicalDisk | Where-Object { ($_.OperationalStatus -eq "Lost Communication") -and ($_.DeviceId -ne "0") }
+if(($badDisks | Measure-Object) -eq 0)
+{
+	Write-Host "There are no Disks with Lost Communication Status"
+}
+else 
+{
+	$DeviceIds = $PhysicalDisks.DeviceId | ForEach-Object { $_[0] } | Select-Object -Unique
 
-$badNode = "hyp02"
+	#Get Nodes from registry
+	$NodesReg = Get-ItemProperty HKLM:\Cluster\Nodes\* | Select-Object NodeName,PSChildName
 
-#Get Virtual Disks
-Get-VirtualDisk | Out-String
+	$badNode = @()
+	ForEach ($n In $NodesReg)
+	{
+		if($DeviceIds -contains $n.PSChildName)
+		{
+			$badNode += $n.NodeName
+		}
+	}
 
-# Pause Node
-Suspend-ClusterNode -Name $badNode
+	Write-Host ("Nodes with PhysicalDisk Lost Communication: " + $badNode)
+}
 
-Get-ClusterGroup | Where-Object {($_.OwnerNode -eq $badNode) -and ($_.GroupType -eq "VirtualMachine")} | Move-ClusterVirtualMachineRole
-Get-ClusterGroup | Where-Object {$_.OwnerGroup -eq $badNode} | Move-ClusterGroup
+if($badNode -notcontains $env:COMPUTERNAME)
+{
+	Write-Host "There are no Lost Communication disks on this Node."
+	return;
+}
+else 
+{
+	## Remove below line in prod
+	$badNode = "hyp02"
 
-Get-Service -ComputerName $badNode | out-string
-#Get-Service -Name ClusSvc -ComputerName $badNode | Stop-Service
-#Start-Sleep -Seconds 5
-#Get-Service -Name ClusSvc -ComputerName $badNode | Start-Service
+	#Get Virtual Disks
+	Get-VirtualDisk | Out-String
 
-Resume-ClusterNode $badNode
+	# Pause Node
+	Suspend-ClusterNode -Name $badNode
 
-#Get StorageJob
-Get-StorageJob | Out-String
+	Get-ClusterGroup | Where-Object {($_.OwnerNode -eq $badNode) -and ($_.GroupType -eq "VirtualMachine")} | Move-ClusterVirtualMachineRole
+	Get-ClusterGroup | Where-Object {$_.OwnerGroup -eq $badNode} | Move-ClusterGroup
 
-Get-ClusterNode | Out-String
+	Get-Service -ComputerName $badNode | out-string
+	#Get-Service -Name ClusSvc -ComputerName $badNode | Stop-Service
+	#Start-Sleep -Seconds 5
+	#Get-Service -Name ClusSvc -ComputerName $badNode | Start-Service
 
-Get-Service -Name ClusSvc
+	Resume-ClusterNode $badNode
+
+	#Get StorageJob
+	Get-StorageJob | Out-String
+
+	Get-ClusterNode | Out-String
+
+	Get-Service -Name ClusSvc
+
+}
+
+
+
+
