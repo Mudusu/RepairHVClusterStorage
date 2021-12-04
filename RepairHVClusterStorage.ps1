@@ -22,6 +22,7 @@ $badDisks = Get-PhysicalDisk | Where-Object { ($_.OperationalStatus -eq "Lost Co
 if(($badDisks | Measure-Object).Count -eq 0)
 {
 	Write-Host "There are no Disks with Lost Communication Status"
+	return
 }
 else 
 {
