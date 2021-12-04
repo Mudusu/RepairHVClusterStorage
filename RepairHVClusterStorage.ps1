@@ -27,20 +27,27 @@ if(($badDisks | Measure-Object).Count -eq 0)
 else 
 {
 	$DeviceIds = $badDisks.DeviceId | ForEach-Object { $_[0] } | Select-Object -Unique
-
 	#Get Nodes from registry
 	$NodesReg = Get-ItemProperty HKLM:\Cluster\Nodes\* | Select-Object NodeName,PSChildName
-
 	$badNode = @()
-	ForEach ($n In $NodesReg)
-	{
-		if($DeviceIds -contains $n.PSChildName)
-		{
-			$badNode += $n.NodeName
-		}
-	}
 
-	Write-Host ("Nodes with PhysicalDisk Lost Communication: " + $badNode)
+	if($DeviceIds)
+	{
+		ForEach ($n In $NodesReg)
+			{
+				if($DeviceIds -contains $n.PSChildName)
+				{
+					$badNode += $n.NodeName
+				}
+			}
+
+		Write-Host ("Nodes with PhysicalDisk Lost Communication: " + $badNode)
+	}
+	else 
+	{
+		$DeviceIds = (Get-PhysicalDisk | Where-Object {($_.DeviceId -ne 0) -and ($_.DeviceId -ne $null)}).DeviceId | ForEach-Object {$_[0]} | Select-Object -Unique
+		
+	}
 }
 
 return
