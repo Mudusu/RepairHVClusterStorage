@@ -43,6 +43,8 @@ else
 	Write-Host ("Nodes with PhysicalDisk Lost Communication: " + $badNode)
 }
 
+return
+
 if($badNode -notcontains $env:COMPUTERNAME)
 {
 	Write-Host "There are no Lost Communication disks on this Node."
