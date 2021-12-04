@@ -19,13 +19,13 @@ Get-ClusterNode | Out-String
 
 #Get Cluster Disks
 $badDisks = Get-PhysicalDisk | Where-Object { ($_.OperationalStatus -eq "Lost Communication") -and ($_.DeviceId -ne "0") }
-if(($badDisks | Measure-Object) -eq 0)
+if(($badDisks | Measure-Object).Count -eq 0)
 {
 	Write-Host "There are no Disks with Lost Communication Status"
 }
 else 
 {
-	$DeviceIds = $PhysicalDisks.DeviceId | ForEach-Object { $_[0] } | Select-Object -Unique
+	$DeviceIds = $badDisks.DeviceId | ForEach-Object { $_[0] } | Select-Object -Unique
 
 	#Get Nodes from registry
 	$NodesReg = Get-ItemProperty HKLM:\Cluster\Nodes\* | Select-Object NodeName,PSChildName
