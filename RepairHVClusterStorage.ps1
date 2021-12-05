@@ -52,7 +52,7 @@ else
 
 		foreach($n in $NodesReg)
 		{
-			$nDisks = (($PhysicalDisks | Where-Object { $_.DeviceId[0] -eq $n.PSChildName[0] }) | Measure-Object).Count
+			$nDisks = (($PhysicalDisks | Where-Object { ($_.DeviceId) -and ($_.DeviceId[0] -eq $n.PSChildName[0]) }) | Measure-Object).Count
 			Write-Host ($n.NodeName + " " + $nDisks)
 		}
 	}
