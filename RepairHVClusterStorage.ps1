@@ -85,10 +85,11 @@ else
 	Get-ClusterGroup | Where-Object {($_.OwnerNode -eq $badNode) -and ($_.GroupType -eq "VirtualMachine")} | Move-ClusterVirtualMachineRole
 	Get-ClusterGroup | Where-Object {$_.OwnerGroup -eq $badNode} | Move-ClusterGroup
 
-	Get-Service -Name ClusSvc | Stop-Service
+	Stop-Service ClusSvc -Verbose
 	Start-Sleep -Seconds 5
-	Get-Service -Name ClusSvc | Start-Service
-
+	Start-Service ClusSvc -Verbose
+	Start-Sleep -Seconds 60
+	
 	Resume-ClusterNode $badNode
 
 	#Get StorageJob
