@@ -46,7 +46,7 @@ else
 	else ## if device ids are blank
 	{
 		#$DeviceIds = (Get-PhysicalDisk | Where-Object {($_.DeviceId -ne 0) -and ($_.DeviceId -ne $null)}).DeviceId | ForEach-Object {$_[0]} | Select-Object -Unique
-		$PhysicalDisks = (Get-PhysicalDisk).DeviceId
+		$PhysicalDisks = Get-PhysicalDisk
 
 		$disksperNode = ($PhysicalDisks.Count / $NodesReg.Count)
 
