@@ -26,7 +26,7 @@ if(($badDisks | Measure-Object).Count -eq 0)
 }
 else 
 {
-	$lostDeviceIds = $badDisks.DeviceId | ForEach-Object { $_[0] } | Select-Object -Unique
+	$lostDeviceIds = $badDisks.DeviceId | Where-Object {($_.DeviceId -ne 0) -and ($_.DeviceId -ne $null)} | ForEach-Object { $_[0] } | Select-Object -Unique
 	#Get Nodes from registry
 	$NodesReg = Get-ItemProperty HKLM:\Cluster\Nodes\* | Select-Object NodeName,PSChildName
 	$badNode = @()
