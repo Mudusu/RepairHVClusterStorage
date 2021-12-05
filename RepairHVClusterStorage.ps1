@@ -53,7 +53,15 @@ else
 		foreach($n in $NodesReg)
 		{
 			$nDisks = (($PhysicalDisks | Where-Object { ($_.DeviceId) -and ($_.DeviceId[0] -eq $n.PSChildName[0]) }) | Measure-Object).Count
-			Write-Host ($n.NodeName + " " + $nDisks)
+			if($nDisks -lt $disksperNode)
+			{
+				$badNode += $n.NodeName
+			}
+		}
+
+		if($badNode)
+		{
+			Write-Host ("Nodes with Physical Disks Lost Communication: " + $badNode)
 		}
 	}
 }
