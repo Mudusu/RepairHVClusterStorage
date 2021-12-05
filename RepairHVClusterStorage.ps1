@@ -14,8 +14,10 @@
 
 # Repair storage
 
-Get-Cluster
-Get-ClusterNode | Out-String
+Write-Host (Get-Cluster | Out-String)
+Write-Host (Get-ClusterNode | Out-String)
+Write-Host (Get-PhysicalDisk | Out-String)
+Write-host (Get-VirtualDisk | Out-String)
 
 #Get Cluster Disks
 $badDisks = Get-PhysicalDisk | Where-Object { ($_.OperationalStatus -eq "Lost Communication") -and ($_.DeviceId -ne "0") }
