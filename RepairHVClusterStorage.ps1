@@ -46,13 +46,13 @@ else
 	else ## if device ids are blank
 	{
 		#$DeviceIds = (Get-PhysicalDisk | Where-Object {($_.DeviceId -ne 0) -and ($_.DeviceId -ne $null)}).DeviceId | ForEach-Object {$_[0]} | Select-Object -Unique
-		$PhysicalDisks = Get-PhysicalDisk
+		$PhysicalDisks = Get-PhysicalDisk | Where-Object { $_.DeviceId -ne "0" }
 
 		$disksperNode = ($PhysicalDisks.Count / $NodesReg.Count)
 
 		foreach($n in $NodesReg)
 		{
-			$nDisks = (($PhysicalDisks | Where-Object { $_.DeviceId[0] -eq $n.DeviceId }) | Measure-Object).Count
+			$nDisks = (($PhysicalDisks | Where-Object { $_.DeviceId[0] -eq $n.DeviceId[0] }) | Measure-Object).Count
 			Write-Host ($n.NodeName + " " + $nDisks)
 		}
 	}
