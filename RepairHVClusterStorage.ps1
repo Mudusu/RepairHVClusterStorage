@@ -68,7 +68,6 @@ else
 	}
 }
 
-return
 
 if($badNode -notcontains $env:COMPUTERNAME)
 {
@@ -78,10 +77,7 @@ if($badNode -notcontains $env:COMPUTERNAME)
 else 
 {
 	## Remove below line in prod
-	$badNode = "hyp02"
-
-	#Get Virtual Disks
-	Get-VirtualDisk | Out-String
+	#$badNode = "hyp02"
 
 	# Pause Node
 	Suspend-ClusterNode -Name $badNode
@@ -89,7 +85,7 @@ else
 	Get-ClusterGroup | Where-Object {($_.OwnerNode -eq $badNode) -and ($_.GroupType -eq "VirtualMachine")} | Move-ClusterVirtualMachineRole
 	Get-ClusterGroup | Where-Object {$_.OwnerGroup -eq $badNode} | Move-ClusterGroup
 
-	Get-Service -ComputerName $badNode | out-string
+	Get-Service | out-string
 	#Get-Service -Name ClusSvc -ComputerName $badNode | Stop-Service
 	#Start-Sleep -Seconds 5
 	#Get-Service -Name ClusSvc -ComputerName $badNode | Start-Service
@@ -104,7 +100,3 @@ else
 	Get-Service -Name ClusSvc
 
 }
-
-
-
-
