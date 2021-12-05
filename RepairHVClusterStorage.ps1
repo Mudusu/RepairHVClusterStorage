@@ -85,10 +85,9 @@ else
 	Get-ClusterGroup | Where-Object {($_.OwnerNode -eq $badNode) -and ($_.GroupType -eq "VirtualMachine")} | Move-ClusterVirtualMachineRole
 	Get-ClusterGroup | Where-Object {$_.OwnerGroup -eq $badNode} | Move-ClusterGroup
 
-	Get-Service | out-string
-	#Get-Service -Name ClusSvc -ComputerName $badNode | Stop-Service
-	#Start-Sleep -Seconds 5
-	#Get-Service -Name ClusSvc -ComputerName $badNode | Start-Service
+	Get-Service -Name ClusSvc | Stop-Service
+	Start-Sleep -Seconds 5
+	Get-Service -Name ClusSvc | Start-Service
 
 	Resume-ClusterNode $badNode
 
@@ -96,7 +95,7 @@ else
 	Get-StorageJob | Out-String
 
 	Get-ClusterNode | Out-String
-
-	Get-Service -Name ClusSvc
+	Get-PhysicalDisk | Out-String
+	Get-VirtualDisk | Out-String
 
 }
